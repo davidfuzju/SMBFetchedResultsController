@@ -1,0 +1,20 @@
+PODS:
+  - Expecta (0.4.2)
+  - SMBFetchedResultsController (0.1.0)
+  - Specta (0.5.0)
+
+DEPENDENCIES:
+  - Expecta
+  - SMBFetchedResultsController (from `../`)
+  - Specta
+
+EXTERNAL SOURCES:
+  SMBFetchedResultsController:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Expecta: 78b4e8b0c8291fa4524d7f74016b6065c2e391ec
+  SMBFetchedResultsController: 719377292a427deac1360601aaa6bca6245c7949
+  Specta: eb90708ed77569bbda089f8ead10bb99b8e9489e
+
+COCOAPODS: 0.36.4
