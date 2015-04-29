@@ -35,11 +35,11 @@ describe(@"these will pass", ^{
         expect(@"team").toNot.contain(@"I");
     });
     
-    it(@"will wait and succeed", ^AsyncBlock {
-        waitUntil(^(DoneCallback done) {
-            done();
-        });
-    });
+//    it(@"will wait and succeed", ^AsyncBlock {
+//        waitUntil(^(DoneCallback done) {
+//            done();
+//        });
+//    });
 });
 
 SpecEnd
