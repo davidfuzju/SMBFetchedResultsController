@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,8 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="nvw-ry-2Q5">
-                                <rect key="frame" x="0.0" y="20" width="320" height="325"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="nvw-ry-2Q5">
+                                <rect key="frame" x="0.0" y="20" width="320" height="384"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" textLabel="dhJ-qQ-W4p" detailTextLabel="LkH-9a-e7x" style="IBUITableViewCellStyleSubtitle" id="J6N-c9-xt6">
@@ -48,8 +48,8 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="Ydk-3b-aVy"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zbA-ko-8UT">
-                                <rect key="frame" x="16" y="404" width="38" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zbA-ko-8UT">
+                                <rect key="frame" x="88.5" y="414" width="143" height="30"/>
                                 <state key="normal" title="insert">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -57,8 +57,8 @@
                                     <action selector="insertButtonClick:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="UnR-eg-VcN"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7WD-Kc-4xe">
-                                <rect key="frame" x="16" y="442" width="51" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7WD-Kc-4xe">
+                                <rect key="frame" x="89" y="452" width="143" height="30"/>
                                 <state key="normal" title="remove">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -66,8 +66,8 @@
                                     <action selector="removeButtonClick:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="lzT-Z0-000"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PCH-Tf-j2T">
-                                <rect key="frame" x="16" y="480" width="51" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PCH-Tf-j2T">
+                                <rect key="frame" x="89" y="490" width="143" height="30"/>
                                 <state key="normal" title="replace">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -75,8 +75,12 @@
                                     <action selector="replaceButtonClick:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="3KD-0P-dLQ"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YVT-eg-Jrk">
-                                <rect key="frame" x="16" y="518" width="38" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YVT-eg-Jrk">
+                                <rect key="frame" x="89" y="528" width="143" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="JDf-gM-auD"/>
+                                    <constraint firstAttribute="width" constant="143" id="SeS-i6-i0s"/>
+                                </constraints>
                                 <state key="normal" title="move">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -85,7 +89,26 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7WD-Kc-4xe" firstAttribute="width" secondItem="YVT-eg-Jrk" secondAttribute="width" id="0Hs-u3-uXJ"/>
+                            <constraint firstAttribute="centerX" secondItem="7WD-Kc-4xe" secondAttribute="centerX" id="0j3-k7-VtW"/>
+                            <constraint firstItem="YVT-eg-Jrk" firstAttribute="width" secondItem="zbA-ko-8UT" secondAttribute="width" id="2zW-Lk-xwl"/>
+                            <constraint firstItem="7WD-Kc-4xe" firstAttribute="top" secondItem="zbA-ko-8UT" secondAttribute="bottom" constant="8" id="3wX-TJ-XSW"/>
+                            <constraint firstAttribute="trailing" secondItem="nvw-ry-2Q5" secondAttribute="trailing" id="4za-fr-mj0"/>
+                            <constraint firstItem="nvw-ry-2Q5" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" id="BOZ-4s-ibw"/>
+                            <constraint firstItem="zbA-ko-8UT" firstAttribute="top" secondItem="nvw-ry-2Q5" secondAttribute="bottom" constant="10" id="CFC-F0-lUb"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="YVT-eg-Jrk" secondAttribute="bottom" constant="10" id="FhR-yE-WIt"/>
+                            <constraint firstItem="YVT-eg-Jrk" firstAttribute="top" secondItem="PCH-Tf-j2T" secondAttribute="bottom" constant="8" id="H4P-xh-b0m"/>
+                            <constraint firstAttribute="centerX" secondItem="PCH-Tf-j2T" secondAttribute="centerX" id="PNS-Ri-FxS"/>
+                            <constraint firstAttribute="centerX" secondItem="YVT-eg-Jrk" secondAttribute="centerX" id="RUg-Nu-cGh"/>
+                            <constraint firstItem="PCH-Tf-j2T" firstAttribute="top" secondItem="7WD-Kc-4xe" secondAttribute="bottom" constant="8" id="WSl-T4-8ds"/>
+                            <constraint firstAttribute="centerX" secondItem="zbA-ko-8UT" secondAttribute="centerX" id="ZcJ-IZ-9Ag"/>
+                            <constraint firstItem="nvw-ry-2Q5" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="cF9-oP-u2R"/>
+                            <constraint firstItem="7WD-Kc-4xe" firstAttribute="height" secondItem="YVT-eg-Jrk" secondAttribute="height" id="eUy-Gg-yg8"/>
+                            <constraint firstItem="YVT-eg-Jrk" firstAttribute="height" secondItem="zbA-ko-8UT" secondAttribute="height" id="gfO-dI-Pmv"/>
+                            <constraint firstItem="PCH-Tf-j2T" firstAttribute="height" secondItem="YVT-eg-Jrk" secondAttribute="height" id="p6O-Cy-LNd"/>
+                            <constraint firstItem="PCH-Tf-j2T" firstAttribute="width" secondItem="YVT-eg-Jrk" secondAttribute="width" id="qJ0-iM-iSn"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="nvw-ry-2Q5" id="Qp9-WQ-P9V"/>

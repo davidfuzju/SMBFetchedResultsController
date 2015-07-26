@@ -34,15 +34,12 @@
 - (void)insertObjectsFromArray:(NSArray *)otherArray;
 
 - (void)bubbleObject:(id <SMBFetchedResultsProtocol>)object;
-- (void)updateObject:(id <SMBFetchedResultsProtocol>)object;
 
 - (void)removeObject:(id <SMBFetchedResultsProtocol>)object;
 
-- (NSUInteger)indexOfObject:(id <SMBFetchedResultsProtocol>)anObject;
+- (void)updateObject:(id <SMBFetchedResultsProtocol>)object;
 
-- (id <SMBFetchedResultsProtocol>)objectInDataAtIndex:(NSUInteger)index;
-- (NSArray *)dataAtIndexes:(NSIndexSet *)indexes;
-- (NSUInteger)countOfData;
+- (NSUInteger)indexOfObject:(id <SMBFetchedResultsProtocol>)anObject;
 
 /** KVC one-to-many compliance interface */
 - (void)insertObject:(id <SMBFetchedResultsProtocol>)object inDataAtIndex:(NSUInteger)index;
@@ -57,7 +54,8 @@
 /** custom KVC one-to-many compliance interface for move */
 - (void)moveObjectInDataAtIndex:(NSUInteger)index toIndex:(NSUInteger)toIndex;
 
-/** forbid */
-- (instancetype)init __attribute__((unavailable("Invoke the designated initializer `initWithMutableData` instead.")));
-- (instancetype)new __attribute__((unavailable("Invoke the designated initializer `initWithMutableData` instead.")));
+- (id <SMBFetchedResultsProtocol>)objectInDataAtIndex:(NSUInteger)index;
+- (NSArray *)dataAtIndexes:(NSIndexSet *)indexes;
+- (NSUInteger)countOfData;
+
 @end
