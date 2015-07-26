@@ -9,6 +9,25 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
+Use it just like NSFetchedResultsController, set it up:
+
+    - (void)viewDidLoad {
+        [super viewDidLoad];
+        
+        self.dataSource = [NSMutableOrderedSet orderedSetWithObject:[[Person alloc] initWithName:@"sherry"]];
+        SMBFetchedResults *fetchedResults = [[SMBFetchedResults alloc] initWithMutableData:self.dataSource];
+        self.fetchedResultsController = [[SMBFetchedResultsController alloc] initWithFetchedResults:fetchedResults title:@"SMB" delegate:self];
+    }
+
+insert operation to SMBFetchedResults data struct:
+
+    - (IBAction)insertButtonClick:(id)sender {
+        Person *person = [[Person alloc] initWithName:@"david"];
+        [self.fetchedResultsController.fetchedResults insertObject:person inDataAtIndex:0];
+    }
+
+that's it!
+
 ## Requirements
 
 ## Installation
