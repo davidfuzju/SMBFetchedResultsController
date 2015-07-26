@@ -65,22 +65,22 @@ static char MyObservationContext;
     if (context == &MyObservationContext) {
         if ([keyPath isEqualToString:@"data"]) {
             if (object == self.fetchedResults) {
-                    NSKeyValueChange kind = [change[NSKeyValueChangeKindKey] unsignedIntegerValue];
-                    NSArray *newObject = change[NSKeyValueChangeNewKey];
-                    NSArray *oldObject = change[NSKeyValueChangeOldKey];
-                    NSIndexSet *indexes = (NSIndexSet *)change[NSKeyValueChangeIndexesKey];
-                    NSMutableArray *indexPathsArray = [NSMutableArray array];
-                    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-                        [indexPathsArray addObject:indexPath];
-                    }];
+                SMBFetchedResultsChangeType kind = [change[NSKeyValueChangeKindKey] unsignedIntegerValue];
+                NSArray *newObject = change[NSKeyValueChangeNewKey];
+                NSArray *oldObject = change[NSKeyValueChangeOldKey];
+                NSIndexSet *indexes = (NSIndexSet *)change[NSKeyValueChangeIndexesKey];
+                NSMutableArray *indexPathsArray = [NSMutableArray array];
+                [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                    [indexPathsArray addObject:indexPath];
+                }];
                 
                 /** NSKeyValueChangeMovement
                  move in this lab is combine with delete and insert, so the first
                  delete at object's old indexpath should be reserved
                  */
                 if (self.fetchedResults.moving
-                    && kind == NSKeyValueChangeRemoval) {
+                    && kind == SMBFetchedResultsChangeDelete) {
                     _oldObjects = oldObject;
                     _oldIndexPaths = indexPathsArray;
                     return;
@@ -91,31 +91,27 @@ static char MyObservationContext;
                  insert means my custom NSKeyValueChangeMovement should fire
                  */
                 if (self.fetchedResults.moving
-                    && kind == NSKeyValueChangeInsertion
+                    && kind == SMBFetchedResultsChangeInsert
                     && [_oldObjects isEqualToArray:newObject]) {
 
                     /** becouse KVO change enum does not contain NSKeyValueChangeMovement, so I use 5 instead; */
-                    kind = 5;
+                    kind = SMBFetchedResultsChangeMove;
                 }
                 
                 [self notifyBeginChanges];
                 switch (kind) {
-                    /** NSKeyValueChangeSetting is not support in this lib */
-                    case NSKeyValueChangeSetting: {
-                    }
-                        break;
-                    case NSKeyValueChangeInsertion: {
+                   case SMBFetchedResultsChangeInsert: {
                         [self notifyChangedObjects:newObject atIndexPaths:nil forChangeType:SMBFetchedResultsChangeInsert newIndexPaths:indexPathsArray];
                     }
                         break;
-                    case NSKeyValueChangeRemoval: {
+                    case SMBFetchedResultsChangeDelete: {
 
                         [self notifyChangedObjects:oldObject atIndexPaths:indexPathsArray forChangeType:SMBFetchedResultsChangeDelete newIndexPaths:nil];
                     }
                         break;
                     /** KVO's NSkeyValueChangeReplacement in one to many Compliance for NSMutableOrderedSet
                      did not offer the updated objects' indexpaths*/
-                    case NSKeyValueChangeReplacement: {
+                    case SMBFetchedResultsChangeUpdate: {
                         NSMutableArray *indexPaths2 = [NSMutableArray array];
                         for (id <SMBFetchedResultsProtocol> result in oldObject) {
                             [indexPaths2 addObject:[self indexPathForObject:result]];
@@ -124,13 +120,15 @@ static char MyObservationContext;
                     }
                         break;
                     /** 5 sandfor my custom NSKeyValueChangeMovement */
-                    case 5: {
+                    case SMBFetchedResultsChangeMove: {
                         [self notifyChangedObjects:newObject atIndexPaths:_oldIndexPaths forChangeType:SMBFetchedResultsChangeMove newIndexPaths:indexPathsArray];
                         _oldObjects = nil;
                         _oldIndexPaths = nil;
                     }
                         break;
-                    default:
+                    default: {
+                        /** NSKeyValueChangeSetting is not support in this lib */
+                    }
                         break;
                 }
                 [self notifyEndChanges];

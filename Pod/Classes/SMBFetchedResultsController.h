@@ -10,10 +10,10 @@
 #import "SMBFetchedResults.h"
 
 typedef NS_ENUM(NSUInteger, SMBFetchedResultsChangeType) {
-    SMBFetchedResultsChangeInsert = 1,
-    SMBFetchedResultsChangeDelete = 2,
-    SMBFetchedResultsChangeMove = 3,
-    SMBFetchedResultsChangeUpdate = 4
+    SMBFetchedResultsChangeInsert = NSKeyValueChangeInsertion,
+    SMBFetchedResultsChangeDelete = NSKeyValueChangeRemoval,
+    SMBFetchedResultsChangeMove = 5,
+    SMBFetchedResultsChangeUpdate = NSKeyValueChangeReplacement
 };
 
 @class SMBFetchedResultsController;
@@ -74,9 +74,5 @@ typedef NS_ENUM(NSUInteger, SMBFetchedResultsChangeType) {
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath;
 
 - (NSIndexPath *)indexPathForObject:(id)object;
-
-/** forbid */
-- (instancetype)init __attribute__((unavailable("Invoke the designated initializer `initWithFetchedResults` instead.")));
-+ (instancetype)new __attribute__((unavailable("Invoke the designated initializer `initWithFetchedResults` instead.")));
 
 @end

@@ -14,7 +14,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Expecta: 78b4e8b0c8291fa4524d7f74016b6065c2e391ec
-  SMBFetchedResultsController: 47d15a28da54de960db34cb3fd45abfdeee95d9e
+  SMBFetchedResultsController: c309e840f28db5ec2c91da92cf17c2bad527977a
   Specta: eb90708ed77569bbda089f8ead10bb99b8e9489e
 
 COCOAPODS: 0.38.2
