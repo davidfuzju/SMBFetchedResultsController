@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "SMBFetchedResultsController"
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.summary          = "it is a simple implemtation with NSFetchedRestulsController style based on To-Many Relationship Compliance"
   s.description      = <<-DESC
                         SMBFetchedResultsController is inspired by Cocoa's NSFetchedResultsController style and Cocoa's KVO To-Many Relationship Compliance to support insert, delete, move, replace operation to NSOrderedSet data struct'
