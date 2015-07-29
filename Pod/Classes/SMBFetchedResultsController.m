@@ -128,10 +128,11 @@ static char MyObservationContext;
 
 - (void)adjustMovementForSortedOrderedSetAfterCurrentAction {
     if (self.fetchedResults.sorted) {
-        NSArray *finalArray = [self.fetchedResults sortedResultWithOrderedSet:self.fetchedResultsOrderedSet];
-        for (id <SMBFetchedResultsProtocol> object in finalArray) {
+        NSMutableOrderedSet *destinationOrderedSet = [self.fetchedResultsOrderedSet mutableCopy];
+        [self.fetchedResults sortedResultWithOrderedSet:destinationOrderedSet];
+        for (id <SMBFetchedResultsProtocol> object in destinationOrderedSet) {
             NSUInteger originIndex = [self.fetchedResultsOrderedSet indexOfObject:object];
-            NSUInteger finalIndex = [finalArray indexOfObject:object];
+            NSUInteger finalIndex = [destinationOrderedSet indexOfObject:object];
             if (originIndex != finalIndex) {
                 [self.fetchedResults moveObjectFromIndex:originIndex toIndex:finalIndex];
                 break;

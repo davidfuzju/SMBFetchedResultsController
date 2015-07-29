@@ -51,11 +51,15 @@
 }
 
 - (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData sortKeyPaths:(NSString *)sortKeyPaths sortOptions:(NSStringCompareOptions)options {
-    _data = mutableData;
-    _sortKeyPaths = sortKeyPaths;
-    _options = options;
-    _moving = NO;
-    _queue = dispatch_queue_create("CTFetchecResults queue", NULL);
+    self = [super init];
+    if (self) {
+        _data = mutableData;
+        _sortKeyPaths = sortKeyPaths;
+        _options = options;
+        _moving = NO;
+        _queue = dispatch_queue_create("CTFetchecResults queue", NULL);
+        [self sortedResultWithOrderedSet:_data];
+    }
     return self;
 }
 
@@ -63,8 +67,7 @@
     if ([key isEqualToString:@"data"]) {
         return YES;
     }
-    return NO;
-    //return [super automaticallyNotifiesObserversForKey:key];
+    return [super automaticallyNotifiesObserversForKey:key];
 }
 
 #pragma mark Proxying
@@ -90,10 +93,10 @@
 
 - (NSUInteger)adjustIndexWithObject:(id<SMBFetchedResultsProtocol>)object index:(NSUInteger)index {
     if (self.sorted) {
-        NSMutableOrderedSet *originOrderedSet = [self.data mutableCopy];
-        [originOrderedSet addObject:object];
-        NSArray *finalArray = [self sortedResultWithOrderedSet:originOrderedSet];
-        NSUInteger finalIndex = [finalArray indexOfObject:object];
+        NSMutableOrderedSet *destinationOrderedSet = [self.data mutableCopy];
+        [destinationOrderedSet addObject:object];
+        [self sortedResultWithOrderedSet:destinationOrderedSet];
+        NSUInteger finalIndex = [destinationOrderedSet indexOfObject:object];
         return finalIndex;
     }
     else {
@@ -101,11 +104,11 @@
     }
 }
 
-- (NSArray *)sortedResultWithOrderedSet:(NSOrderedSet *)orderedSet {
+- (void)sortedResultWithOrderedSet:(NSMutableOrderedSet *)orderedSet {
     __block NSArray *keyPaths = [self.sortKeyPaths componentsSeparatedByString:@","];
 
-    NSArray *finalArray = [orderedSet sortedArrayWithOptions:NSSortConcurrent|NSSortStable
-                                           usingComparator:^NSComparisonResult(id obj1, id obj2) {
+    [orderedSet sortWithOptions:NSSortConcurrent|NSSortStable
+                usingComparator:^NSComparisonResult(id obj1, id obj2) {
                                                for (NSString *path in keyPaths) {
                                                    id value1 = [obj1 valueForKeyPath:path];
                                                    id value2 = [obj2 valueForKeyPath:path];
@@ -126,7 +129,6 @@
                                                }
                                                return NSOrderedSame;
                                            }];
-    return finalArray;
 }
 
 - (id)objectInDataAtIndex:(NSUInteger)index {

@@ -29,7 +29,7 @@
 
 @property (readonly, nonatomic, assign) BOOL sorted;
 
-- (NSArray *)sortedResultWithOrderedSet:(NSOrderedSet *)orderedSet;
+- (void)sortedResultWithOrderedSet:(NSMutableOrderedSet *)orderedSet;
 
 - (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData;
 - (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData sortKeyPaths:(NSString *)sortKeyPaths sortOptions:(NSStringCompareOptions)options;
