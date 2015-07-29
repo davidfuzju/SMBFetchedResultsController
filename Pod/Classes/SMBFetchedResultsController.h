@@ -69,8 +69,6 @@ typedef NS_ENUM(NSUInteger, SMBFetchedResultsChangeType) {
 
 - (instancetype)initWithFetchedResults:(SMBFetchedResults *)results title:(NSString *)title delegate:(id <SMBFetchedResultsControllerDelegate>)delegate;
 
-- (void)setSortKeyPath:(NSString *)sortKeyPath sortOptions:(NSStringCompareOptions)options;
-
 - (NSIndexPath *)indexPathForLastObject;
 
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath;
