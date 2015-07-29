@@ -23,9 +23,18 @@
 
 @property (readonly, nonatomic, strong) NSMutableOrderedSet *data;
 
+@property (readonly, nonatomic, copy) NSString *sortKeyPaths;
+
+@property (readonly, nonatomic, assign) NSStringCompareOptions options;
+
 @property (readonly, nonatomic, assign) BOOL moving;
 
+@property (readonly, nonatomic, assign) BOOL sorted;
+
+- (NSArray *)sortedResultWithOrderedSet:(NSOrderedSet *)orderedSet;
+
 - (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData;
+- (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData sortKeyPaths:(NSString *)sortKeyPaths sortOptions:(NSStringCompareOptions)options;
 
 - (void)appendObject:(id <SMBFetchedResultsProtocol>)object;
 - (void)appendObjectsFromArray:(NSArray *)otherArray;
@@ -33,26 +42,18 @@
 - (void)insertObject:(id <SMBFetchedResultsProtocol>)object;
 - (void)insertObjectsFromArray:(NSArray *)otherArray;
 
-- (void)bubbleObject:(id <SMBFetchedResultsProtocol>)object;
-
 - (void)removeObject:(id <SMBFetchedResultsProtocol>)object;
+- (void)removeObjectsFromArray:(NSArray *)otherArray;
 
 - (void)updateObject:(id <SMBFetchedResultsProtocol>)object;
+- (void)updateObjectsFromArray:(NSArray *)otherArray;
+
+- (void)bubbleObject:(id <SMBFetchedResultsProtocol>)object;
+
+- (void)moveObjectFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 - (NSUInteger)indexOfObject:(id <SMBFetchedResultsProtocol>)anObject;
 
-/** KVC one-to-many compliance interface */
-- (void)insertObject:(id <SMBFetchedResultsProtocol>)object inDataAtIndex:(NSUInteger)index;
-- (void)insertData:(NSArray *)data atIndexes:(NSIndexSet *)indexes;
-
-- (void)removeObjectFromDataAtIndex:(NSUInteger)index;
-- (void)removeDataAtIndexes:(NSIndexSet *)indexes;
-
-- (void)replaceObjectInDataAtIndex:(NSUInteger)index withObject:(id <SMBFetchedResultsProtocol>)object;
-- (void)replaceDataAtIndexes:(NSIndexSet *)indexes withData:(NSArray *)data;
-
-/** custom KVC one-to-many compliance interface for move */
-- (void)moveObjectInDataAtIndex:(NSUInteger)index toIndex:(NSUInteger)toIndex;
 
 - (id <SMBFetchedResultsProtocol>)objectInDataAtIndex:(NSUInteger)index;
 - (NSArray *)dataAtIndexes:(NSIndexSet *)indexes;

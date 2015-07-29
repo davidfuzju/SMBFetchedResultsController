@@ -13,7 +13,24 @@
 
 @property (readwrite, nonatomic, strong) NSMutableOrderedSet *data;
 
+@property (readwrite, nonatomic, copy) NSString *sortKeyPaths;
+
+@property (readwrite, nonatomic, assign) NSStringCompareOptions options;
+
 @property (readwrite, nonatomic, assign) BOOL moving;
+
+/** KVC one-to-many compliance interface */
+- (void)insertObject:(id <SMBFetchedResultsProtocol>)object inDataAtIndex:(NSUInteger)index;
+- (void)insertData:(NSArray *)data atIndexes:(NSIndexSet *)indexes;
+
+- (void)removeObjectFromDataAtIndex:(NSUInteger)index;
+- (void)removeDataAtIndexes:(NSIndexSet *)indexes;
+
+- (void)replaceObjectInDataAtIndex:(NSUInteger)index withObject:(id <SMBFetchedResultsProtocol>)object;
+- (void)replaceDataAtIndexes:(NSIndexSet *)indexes withData:(NSArray *)data;
+
+/** custom KVC one-to-many compliance interface for move */
+- (void)moveObjectInDataAtIndex:(NSUInteger)index toIndex:(NSUInteger)toIndex;
 
 @end
 
@@ -22,13 +39,20 @@
 #pragma mark - life cycle
 
 - (instancetype)init {
-    return [self initWithMutableData:[NSMutableOrderedSet orderedSet]];
+    return [self initWithMutableData:[NSMutableOrderedSet orderedSet] sortKeyPaths:nil sortOptions:0];
 }
 
 - (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData {
+    return [self initWithMutableData:mutableData sortKeyPaths:nil sortOptions:0];
+}
+
+- (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData sortKeyPaths:(NSString *)sortKeyPaths sortOptions:(NSStringCompareOptions)options {
     self = [super init];
     if (self) {
+        
         _data = mutableData;
+        _sortKeyPaths = sortKeyPaths;
+        _options = options;
         _moving = NO;
         _queue = dispatch_queue_create("CTFetchecResults queue", NULL);
     }
@@ -47,6 +71,47 @@
 #pragma mark - event response
 
 #pragma mark - private methods
+
+- (NSUInteger)adjustIndexWithObject:(id<SMBFetchedResultsProtocol>)object index:(NSUInteger)index {
+    if (self.sorted) {
+        NSMutableOrderedSet *originOrderedSet = [self.data mutableCopy];
+        [originOrderedSet addObject:object];
+        NSArray *finalArray = [self sortedResultWithOrderedSet:originOrderedSet];
+        NSUInteger finalIndex = [finalArray indexOfObject:object];
+        return finalIndex;
+    }
+    else {
+        return index;
+    }
+}
+
+- (NSArray *)sortedResultWithOrderedSet:(NSOrderedSet *)orderedSet {
+    __block NSArray *keyPaths = [self.sortKeyPaths componentsSeparatedByString:@","];
+
+    NSArray *finalArray = [orderedSet sortedArrayWithOptions:NSSortConcurrent|NSSortStable
+                                           usingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                               for (NSString *path in keyPaths) {
+                                                   id value1 = [obj1 valueForKeyPath:path];
+                                                   id value2 = [obj2 valueForKeyPath:path];
+                                                   
+                                                   NSComparisonResult result;
+                                                   if ([value1 isKindOfClass:[NSNumber class]]) {
+                                                       result = [value1 compare:value2];
+                                                   }
+                                                   else if ([value1 isKindOfClass:[NSString class]]) {
+                                                       result = [value1 compare:value2 options:self.options];
+                                                   }
+                                                   else {
+                                                       result = NSOrderedSame;
+                                                   }
+                                                   
+                                                   if (result != NSOrderedSame)
+                                                       return result;
+                                               }
+                                               return NSOrderedSame;
+                                           }];
+    return finalArray;
+}
 
 - (id)objectInDataAtIndex:(NSUInteger)index {
     if (self.countOfData == 0) return nil;
@@ -124,32 +189,49 @@
 
 #pragma mark - accessor methods
 
+- (BOOL)sorted {
+    return self.sortKeyPaths != nil;
+}
+
 #pragma mark - api methods
 
 
 - (void)appendObject:(id)object {
-    [self insertObject:object inDataAtIndex:self.countOfData];
+    NSUInteger index = [self adjustIndexWithObject:object index:self.countOfData];
+    [self insertObject:object inDataAtIndex:index];
 }
 
 - (void)appendObjectsFromArray:(NSArray *)otherArray {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.countOfData, otherArray.count)];
-    [self insertData:otherArray atIndexes:indexSet];
-}
-
-- (void)insertObject:(id)object {
-    [self insertObject:object inDataAtIndex:0];
-}
-
-- (void)insertObjectsFromArray:(NSArray *)otherArray {
-    if (otherArray.count) {
-        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, otherArray.count)];
+    if (self.sorted) {
+        for (id<SMBFetchedResultsProtocol> object in otherArray) {
+            NSUInteger index = [self adjustIndexWithObject:object index:-1];
+            [self insertObject:object inDataAtIndex:index];
+        }
+    }
+    else {
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.countOfData, otherArray.count)];
         [self insertData:otherArray atIndexes:indexSet];
     }
 }
 
-- (void)bubbleObject:(id)object {
-    NSUInteger index = [_data indexOfObject:object];
-    [self moveObjectInDataAtIndex:index toIndex:0];
+- (void)insertObject:(id)object {
+    NSUInteger index = [self adjustIndexWithObject:object index:0];
+    [self insertObject:object inDataAtIndex:index];
+}
+
+- (void)insertObjectsFromArray:(NSArray *)otherArray {
+    if (otherArray.count) {
+        if (self.sorted) {
+            for (id<SMBFetchedResultsProtocol> object in otherArray) {
+                NSUInteger index = [self adjustIndexWithObject:object index:-1];
+                [self insertObject:object inDataAtIndex:index];
+            }
+        }
+        else {
+            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, otherArray.count)];
+            [self insertData:otherArray atIndexes:indexSet];
+        }
+    }
 }
 
 - (void)removeObject:(id<SMBFetchedResultsProtocol>)object {
@@ -157,9 +239,36 @@
     [self removeObjectFromDataAtIndex:index];
 }
 
+- (void)removeObjectsFromArray:(NSArray *)otherArray {
+    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+    for (id <SMBFetchedResultsProtocol> object in otherArray) {
+        NSUInteger index = [_data indexOfObject:object];
+        [indexSet addIndex:index];
+    }
+    [self removeDataAtIndexes:indexSet];
+}
+
 - (void)updateObject:(id)object {
     NSUInteger index = [_data indexOfObject:object];
     [self replaceObjectInDataAtIndex:index withObject:object];
+}
+
+- (void)updateObjectsFromArray:(NSArray *)otherArray {
+    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+    for (id <SMBFetchedResultsProtocol> object in otherArray) {
+        NSUInteger index = [_data indexOfObject:object];
+        [indexSet addIndex:index];
+    }
+    [self replaceDataAtIndexes:indexSet withData:otherArray];
+}
+
+- (void)bubbleObject:(id)object {
+    NSUInteger index = [_data indexOfObject:object];
+    [self moveObjectInDataAtIndex:index toIndex:0];
+}
+
+- (void)moveObjectFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex {
+    [self moveObjectInDataAtIndex:fromIndex toIndex:toIndex];
 }
 
 - (NSUInteger)indexOfObject:(id)anObject {

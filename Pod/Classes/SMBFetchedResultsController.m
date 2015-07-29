@@ -21,6 +21,8 @@ static char MyObservationContext;
 
 @implementation SMBFetchedResultsController
 
+#pragma mark - life cycle
+
 - (instancetype)initWithFetchedResults:(SMBFetchedResults *)results title:(NSString *)title{
     return [self initWithFetchedResults:results title:title delegate:nil];
 }
@@ -41,24 +43,6 @@ static char MyObservationContext;
 
 - (void)dealloc{
     [self.fetchedResults removeObserver:self forKeyPath:@"data"];
-}
-
-- (NSIndexPath *)indexPathForLastObject {
-    if (!self.fetchedResults.countOfData) {
-        return nil;
-    }
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.fetchedResults.countOfData - 1 inSection:0];
-    return indexPath;
-}
-
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.fetchedResults objectInDataAtIndex:indexPath.row];
-}
-
-- (NSIndexPath *)indexPathForObject:(id)object {
-    NSUInteger row = [self.fetchedResults indexOfObject:object];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-    return indexPath;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -93,37 +77,39 @@ static char MyObservationContext;
                 if (self.fetchedResults.moving
                     && kind == SMBFetchedResultsChangeInsert
                     && [_oldObjects isEqualToArray:newObject]) {
-
+                    
                     /** becouse KVO change enum does not contain NSKeyValueChangeMovement, so I use 5 instead; */
                     kind = SMBFetchedResultsChangeMove;
                 }
                 
                 [self notifyBeginChanges];
                 switch (kind) {
-                   case SMBFetchedResultsChangeInsert: {
+                    case SMBFetchedResultsChangeInsert: {
                         [self notifyChangedObjects:newObject atIndexPaths:nil forChangeType:SMBFetchedResultsChangeInsert newIndexPaths:indexPathsArray];
                     }
                         break;
                     case SMBFetchedResultsChangeDelete: {
-
+                        
                         [self notifyChangedObjects:oldObject atIndexPaths:indexPathsArray forChangeType:SMBFetchedResultsChangeDelete newIndexPaths:nil];
                     }
                         break;
-                    /** KVO's NSkeyValueChangeReplacement in one to many Compliance for NSMutableOrderedSet
-                     did not offer the updated objects' indexpaths*/
+                        /** KVO's NSkeyValueChangeReplacement in one to many Compliance for NSMutableOrderedSet
+                         did not offer the updated objects' indexpaths*/
                     case SMBFetchedResultsChangeUpdate: {
                         NSMutableArray *indexPaths2 = [NSMutableArray array];
                         for (id <SMBFetchedResultsProtocol> result in oldObject) {
                             [indexPaths2 addObject:[self indexPathForObject:result]];
                         }
                         [self notifyChangedObjects:oldObject atIndexPaths:indexPaths2 forChangeType:SMBFetchedResultsChangeUpdate newIndexPaths:nil];
+                      [self performSelector:@selector(adjustMovementForSortedOrderedSetAfterCurrentAction) withObject:nil afterDelay:0.0f];
                     }
                         break;
-                    /** 5 sandfor my custom NSKeyValueChangeMovement */
+                        /** 5 sandfor my custom NSKeyValueChangeMovement */
                     case SMBFetchedResultsChangeMove: {
                         [self notifyChangedObjects:newObject atIndexPaths:_oldIndexPaths forChangeType:SMBFetchedResultsChangeMove newIndexPaths:indexPathsArray];
                         _oldObjects = nil;
                         _oldIndexPaths = nil;
+                        [self performSelector:@selector(adjustMovementForSortedOrderedSetAfterCurrentAction) withObject:nil afterDelay:0.0f];
                     }
                         break;
                     default: {
@@ -140,6 +126,27 @@ static char MyObservationContext;
     }
 }
 
+- (void)adjustMovementForSortedOrderedSetAfterCurrentAction {
+    if (self.fetchedResults.sorted) {
+        NSArray *finalArray = [self.fetchedResults sortedResultWithOrderedSet:self.fetchedResults.data];
+        for (id <SMBFetchedResultsProtocol> object in finalArray) {
+            NSUInteger originIndex = [self.fetchedResults.data indexOfObject:object];
+            NSUInteger finalIndex = [finalArray indexOfObject:object];
+            if (originIndex != finalIndex) {
+                [self.fetchedResults moveObjectFromIndex:originIndex toIndex:finalIndex];
+                break;
+            }
+        }
+    }
+}
+
+
+#pragma mark - delegate methods
+
+#pragma mark - event response
+
+#pragma mark - private methods
+
 - (void)notifyBeginChanges {
     if (self.delegate
         && [self.delegate respondsToSelector:@selector(controllerWillChangeContent:)]) {
@@ -150,8 +157,8 @@ static char MyObservationContext;
 }
 
 - (void)notifyChangedObjects:(NSArray *)objects atIndexPaths:(NSArray *)indexPaths
-                                               forChangeType:(SMBFetchedResultsChangeType)type
-                                               newIndexPaths:(NSArray *)newIndexPaths {
+               forChangeType:(SMBFetchedResultsChangeType)type
+               newIndexPaths:(NSArray *)newIndexPaths {
     if (self.delegate
         && [self.delegate respondsToSelector:@selector(controller:didChangeObjects:atIndexPaths:forChangeType:newIndexPaths:)]) {
         [self.delegate controller:self
@@ -171,6 +178,28 @@ static char MyObservationContext;
     }
     else {
     }
+}
+
+#pragma mark - accessor methods
+
+#pragma mark - api methods
+
+- (NSIndexPath *)indexPathForLastObject {
+    if (!self.fetchedResults.countOfData) {
+        return nil;
+    }
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.fetchedResults.countOfData - 1 inSection:0];
+    return indexPath;
+}
+
+- (id)objectAtIndexPath:(NSIndexPath *)indexPath {
+    return [self.fetchedResults objectInDataAtIndex:indexPath.row];
+}
+
+- (NSIndexPath *)indexPathForObject:(id)object {
+    NSUInteger row = [self.fetchedResults indexOfObject:object];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+    return indexPath;
 }
 
 @end
