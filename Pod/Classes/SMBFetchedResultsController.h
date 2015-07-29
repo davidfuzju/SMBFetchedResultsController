@@ -63,6 +63,8 @@ typedef NS_ENUM(NSUInteger, SMBFetchedResultsChangeType) {
 
 @property (readonly, nonatomic, strong) SMBFetchedResults *fetchedResults;
 
+@property (readonly, nonatomic, strong) NSMutableOrderedSet *fetchedResultsOrderedSet;
+
 @property (readonly, nonatomic, copy) NSString *title;
 
 - (instancetype)initWithFetchedResults:(SMBFetchedResults *)results title:(NSString *)title;

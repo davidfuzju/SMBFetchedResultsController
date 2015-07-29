@@ -21,8 +21,6 @@
 
 @interface SMBFetchedResults : NSObject
 
-@property (readonly, nonatomic, strong) NSMutableOrderedSet *data;
-
 @property (readonly, nonatomic, copy) NSString *sortKeyPaths;
 
 @property (readonly, nonatomic, assign) NSStringCompareOptions options;
@@ -51,12 +49,5 @@
 - (void)bubbleObject:(id <SMBFetchedResultsProtocol>)object;
 
 - (void)moveObjectFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
-
-- (NSUInteger)indexOfObject:(id <SMBFetchedResultsProtocol>)anObject;
-
-
-- (id <SMBFetchedResultsProtocol>)objectInDataAtIndex:(NSUInteger)index;
-- (NSArray *)dataAtIndexes:(NSIndexSet *)indexes;
-- (NSUInteger)countOfData;
 
 @end

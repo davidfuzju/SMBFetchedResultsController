@@ -32,6 +32,10 @@
 /** custom KVC one-to-many compliance interface for move */
 - (void)moveObjectInDataAtIndex:(NSUInteger)index toIndex:(NSUInteger)toIndex;
 
+- (id <SMBFetchedResultsProtocol>)objectInDataAtIndex:(NSUInteger)index;
+- (NSArray *)dataAtIndexes:(NSIndexSet *)indexes;
+- (NSUInteger)countOfData;
+
 @end
 
 @implementation SMBFetchedResults
@@ -47,15 +51,11 @@
 }
 
 - (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData sortKeyPaths:(NSString *)sortKeyPaths sortOptions:(NSStringCompareOptions)options {
-    self = [super init];
-    if (self) {
-        
-        _data = mutableData;
-        _sortKeyPaths = sortKeyPaths;
-        _options = options;
-        _moving = NO;
-        _queue = dispatch_queue_create("CTFetchecResults queue", NULL);
-    }
+    _data = mutableData;
+    _sortKeyPaths = sortKeyPaths;
+    _options = options;
+    _moving = NO;
+    _queue = dispatch_queue_create("CTFetchecResults queue", NULL);
     return self;
 }
 
@@ -63,7 +63,23 @@
     if ([key isEqualToString:@"data"]) {
         return YES;
     }
-    return [super automaticallyNotifiesObserversForKey:key];
+    return NO;
+    //return [super automaticallyNotifiesObserversForKey:key];
+}
+
+#pragma mark Proxying
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation {
+    [anInvocation setTarget:self.data];
+    [anInvocation invoke];
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)sel {
+    return [self.data methodSignatureForSelector:sel];
+}
+
+- (NSString *)description {
+    return [self.data description];
 }
 
 #pragma mark - delegate methods
@@ -273,10 +289,6 @@
 
 - (NSUInteger)indexOfObject:(id)anObject {
     return [_data indexOfObject:anObject];
-}
-
-- (NSString *)description {
-    return [_data description];
 }
 
 @end

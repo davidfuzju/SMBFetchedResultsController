@@ -128,9 +128,9 @@ static char MyObservationContext;
 
 - (void)adjustMovementForSortedOrderedSetAfterCurrentAction {
     if (self.fetchedResults.sorted) {
-        NSArray *finalArray = [self.fetchedResults sortedResultWithOrderedSet:self.fetchedResults.data];
+        NSArray *finalArray = [self.fetchedResults sortedResultWithOrderedSet:self.fetchedResultsOrderedSet];
         for (id <SMBFetchedResultsProtocol> object in finalArray) {
-            NSUInteger originIndex = [self.fetchedResults.data indexOfObject:object];
+            NSUInteger originIndex = [self.fetchedResultsOrderedSet indexOfObject:object];
             NSUInteger finalIndex = [finalArray indexOfObject:object];
             if (originIndex != finalIndex) {
                 [self.fetchedResults moveObjectFromIndex:originIndex toIndex:finalIndex];
@@ -182,22 +182,26 @@ static char MyObservationContext;
 
 #pragma mark - accessor methods
 
+- (NSMutableOrderedSet *)fetchedResultsOrderedSet {
+    return (NSMutableOrderedSet *)self.fetchedResults;
+}
+
 #pragma mark - api methods
 
 - (NSIndexPath *)indexPathForLastObject {
-    if (!self.fetchedResults.countOfData) {
+    if (!self.fetchedResultsOrderedSet.count) {
         return nil;
     }
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.fetchedResults.countOfData - 1 inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.fetchedResultsOrderedSet.count - 1 inSection:0];
     return indexPath;
 }
 
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.fetchedResults objectInDataAtIndex:indexPath.row];
+    return [self.fetchedResultsOrderedSet objectAtIndex:indexPath.row];
 }
 
 - (NSIndexPath *)indexPathForObject:(id)object {
-    NSUInteger row = [self.fetchedResults indexOfObject:object];
+    NSUInteger row = [self.fetchedResultsOrderedSet indexOfObject:object];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
     return indexPath;
 }

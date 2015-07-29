@@ -98,7 +98,7 @@ static NSString *generateUUID() {
 
 - (IBAction)removeButtonClick:(id)sender {
     if (self.fetchedResultsController.fetchedResults.countOfData > 0) {
-        [self.fetchedResultsController.fetchedResults removeObject:[self.fetchedResultsController.fetchedResults.data lastObject]];
+        [self.fetchedResultsController.fetchedResults removeObject:[self.fetchedResultsController.fetchedResultsOrderedSet lastObject]];
     }
     else {
         NSLog(@"Error!, remove operation should work under the condition count > 0");
@@ -107,7 +107,7 @@ static NSString *generateUUID() {
 
 - (IBAction)replaceButtonClick:(id)sender {
     if (self.fetchedResultsController.fetchedResults.countOfData > 0) {
-        Person *person = [self.fetchedResultsController.fetchedResults.data firstObject];
+        Person *person = [self.fetchedResultsController.fetchedResultsOrderedSet firstObject];
         person.name = @"mary";
         person.age = rand()%20;
         [self.fetchedResultsController.fetchedResults updateObject:person];
@@ -121,7 +121,7 @@ static NSString *generateUUID() {
 - (IBAction)moveButtonClick:(id)sender {
     if (self.fetchedResultsController.fetchedResults.countOfData > 1) {
         NSUInteger lastIndex = self.fetchedResultsController.fetchedResults.countOfData - 1;
-        [self.fetchedResultsController.fetchedResults moveObjectInDataAtIndex:lastIndex toIndex:0];
+        [self.fetchedResultsController.fetchedResults moveObjectFromIndex:lastIndex toIndex:0];
     }
     else {
         NSLog(@"Error!, replace operation should work under the condition count > 0");
@@ -132,19 +132,15 @@ static NSString *generateUUID() {
     if (self.fetchedResultsController.fetchedResults.countOfData > 0) {
         Person *person = [[Person alloc] initWithName:@"zoe"];
         Person *person1 = [[Person alloc] initWithName:@"petter"];
-        NSMutableIndexSet *indexset = [NSMutableIndexSet indexSet];
-        [indexset addIndex:0];
-        [indexset addIndex:self.fetchedResultsController.fetchedResults.countOfData];
         [self.fetchedResultsController.fetchedResults insertObjectsFromArray:@[person, person1]];
     }
 }
 
 - (IBAction)removesButtonClick:(id)sender {
     if (self.fetchedResultsController.fetchedResults.countOfData > 3) {
-        NSMutableIndexSet *indexset = [NSMutableIndexSet indexSet];
-        [indexset addIndex:1];
-        [indexset addIndex:2];
-        [self.fetchedResultsController.fetchedResults removeDataAtIndexes:indexset];
+        Person *person = [self.fetchedResultsController.fetchedResults objectInDataAtIndex:1];
+        Person *person1 = [self.fetchedResultsController.fetchedResults objectInDataAtIndex:2];
+        [self.fetchedResultsController.fetchedResults removeObjectsFromArray:@[person, person1]];
     }
     else {
         NSLog(@"Error!, remove operation should work under the condition count > 0");
@@ -162,7 +158,7 @@ static NSString *generateUUID() {
         NSMutableIndexSet *indexset = [NSMutableIndexSet indexSet];
         [indexset addIndex:0];
         [indexset addIndex:1];
-        [self.fetchedResultsController.fetchedResults replaceDataAtIndexes:indexset withData:@[person, person1]];
+        [self.fetchedResultsController.fetchedResults updateObjectsFromArray:@[person, person1]];
     }
     else {
         NSLog(@"Error!, replace operation should work under the condition count > 0");
