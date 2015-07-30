@@ -97,7 +97,7 @@ static NSString *generateUUID() {
 }
 
 - (IBAction)removeButtonClick:(id)sender {
-    if (self.fetchedResultsController.fetchedResults.countOfData > 0) {
+    if (self.fetchedResultsController.fetchedResultsOrderedSet.count > 0) {
         [self.fetchedResultsController.fetchedResults removeObject:[self.fetchedResultsController.fetchedResultsOrderedSet lastObject]];
     }
     else {
@@ -106,7 +106,7 @@ static NSString *generateUUID() {
 }
 
 - (IBAction)replaceButtonClick:(id)sender {
-    if (self.fetchedResultsController.fetchedResults.countOfData > 0) {
+    if (self.fetchedResultsController.fetchedResultsOrderedSet.count > 0) {
         Person *person = [self.fetchedResultsController.fetchedResultsOrderedSet firstObject];
         person.name = @"mary";
         person.age = rand()%20;
@@ -119,8 +119,8 @@ static NSString *generateUUID() {
 }
 
 - (IBAction)moveButtonClick:(id)sender {
-    if (self.fetchedResultsController.fetchedResults.countOfData > 1) {
-        NSUInteger lastIndex = self.fetchedResultsController.fetchedResults.countOfData - 1;
+    if (self.fetchedResultsController.fetchedResultsOrderedSet.count > 1) {
+        NSUInteger lastIndex = self.fetchedResultsController.fetchedResultsOrderedSet.count - 1;
         [self.fetchedResultsController.fetchedResults moveObjectFromIndex:lastIndex toIndex:0];
     }
     else {
@@ -129,7 +129,7 @@ static NSString *generateUUID() {
 }
 
 - (IBAction)insertsButtonClick:(id)sender {
-    if (self.fetchedResultsController.fetchedResults.countOfData > 0) {
+    if (self.fetchedResultsController.fetchedResultsOrderedSet.count > 0) {
         Person *person = [[Person alloc] initWithName:@"zoe"];
         Person *person1 = [[Person alloc] initWithName:@"petter"];
         [self.fetchedResultsController.fetchedResults insertObjectsFromArray:@[person, person1]];
@@ -137,9 +137,9 @@ static NSString *generateUUID() {
 }
 
 - (IBAction)removesButtonClick:(id)sender {
-    if (self.fetchedResultsController.fetchedResults.countOfData > 3) {
-        Person *person = [self.fetchedResultsController.fetchedResults objectInDataAtIndex:1];
-        Person *person1 = [self.fetchedResultsController.fetchedResults objectInDataAtIndex:2];
+    if (self.fetchedResultsController.fetchedResultsOrderedSet.count > 3) {
+        Person *person = [self.fetchedResultsController.fetchedResultsOrderedSet objectAtIndex:1];
+        Person *person1 = [self.fetchedResultsController.fetchedResultsOrderedSet objectAtIndex:2];
         [self.fetchedResultsController.fetchedResults removeObjectsFromArray:@[person, person1]];
     }
     else {
@@ -148,11 +148,11 @@ static NSString *generateUUID() {
 }
 
 - (IBAction)replacesButtonClick:(id)sender {
-    if (self.fetchedResultsController.fetchedResults.countOfData > 1) {
-        Person *person = [self.fetchedResultsController.fetchedResults objectInDataAtIndex:0];
+    if (self.fetchedResultsController.fetchedResultsOrderedSet.count > 1) {
+        Person *person = [self.fetchedResultsController.fetchedResultsOrderedSet objectAtIndex:0];
         person.name = @"mary";
         person.age = rand()%20;
-        Person *person1 = [self.fetchedResultsController.fetchedResults objectInDataAtIndex:1];
+        Person *person1 = [self.fetchedResultsController.fetchedResultsOrderedSet objectAtIndex:1];
         person1.name = @"tom";
         person1.age = rand()%20;
         NSMutableIndexSet *indexset = [NSMutableIndexSet indexSet];
@@ -169,7 +169,7 @@ static NSString *generateUUID() {
 #pragma mark UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.fetchedResultsController.fetchedResults.countOfData;
+    return self.fetchedResultsController.fetchedResultsOrderedSet.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

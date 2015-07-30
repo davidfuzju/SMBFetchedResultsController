@@ -254,6 +254,10 @@
 
 - (void)removeObject:(id<SMBFetchedResultsProtocol>)object {
     NSUInteger index = [_data indexOfObject:object];
+    if (index == NSNotFound) {
+        return;
+    }
+
     [self removeObjectFromDataAtIndex:index];
 }
 
@@ -261,13 +265,18 @@
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     for (id <SMBFetchedResultsProtocol> object in otherArray) {
         NSUInteger index = [_data indexOfObject:object];
-        [indexSet addIndex:index];
+        if (index != NSNotFound) {
+            [indexSet addIndex:index];
+        }
     }
     [self removeDataAtIndexes:indexSet];
 }
 
 - (void)updateObject:(id)object {
     NSUInteger index = [_data indexOfObject:object];
+    if (index == NSNotFound) {
+        return;
+    }
     [self replaceObjectInDataAtIndex:index withObject:object];
 }
 
@@ -275,22 +284,23 @@
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     for (id <SMBFetchedResultsProtocol> object in otherArray) {
         NSUInteger index = [_data indexOfObject:object];
-        [indexSet addIndex:index];
+        if (index != NSNotFound) {
+            [indexSet addIndex:index];
+        }
     }
     [self replaceDataAtIndexes:indexSet withData:otherArray];
 }
 
 - (void)bubbleObject:(id)object {
     NSUInteger index = [_data indexOfObject:object];
+    if (index == NSNotFound) {
+        return;
+    }
     [self moveObjectInDataAtIndex:index toIndex:0];
 }
 
 - (void)moveObjectFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex {
     [self moveObjectInDataAtIndex:fromIndex toIndex:toIndex];
-}
-
-- (NSUInteger)indexOfObject:(id)anObject {
-    return [_data indexOfObject:anObject];
 }
 
 @end

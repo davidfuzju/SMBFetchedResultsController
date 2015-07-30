@@ -203,6 +203,9 @@ static char MyObservationContext;
 
 - (NSIndexPath *)indexPathForObject:(id)object {
     NSUInteger row = [self.fetchedResultsOrderedSet indexOfObject:object];
+    if (row == NSNotFound) {
+        return nil;
+    }
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
     return indexPath;
 }
