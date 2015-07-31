@@ -43,14 +43,17 @@
 #pragma mark - life cycle
 
 - (instancetype)init {
-    return [self initWithMutableData:[NSMutableOrderedSet orderedSet] sortKeyPaths:nil sortOptions:0];
+    return [self initWithMutableData:[NSMutableOrderedSet orderedSet] sortKeyPaths:nil ascend:YES sortOptions:0];
 }
 
 - (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData {
-    return [self initWithMutableData:mutableData sortKeyPaths:nil sortOptions:0];
+    return [self initWithMutableData:mutableData sortKeyPaths:nil ascend:YES sortOptions:0];
 }
 
-- (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData sortKeyPaths:(NSString *)sortKeyPaths sortOptions:(NSStringCompareOptions)options {
+- (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData
+                       sortKeyPaths:(NSString *)sortKeyPaths
+                             ascend:(BOOL)ascend
+                        sortOptions:(NSStringCompareOptions)options {
     self = [super init];
     if (self) {
         _data = mutableData;
@@ -125,7 +128,7 @@
                                                    }
                                                    
                                                    if (result != NSOrderedSame)
-                                                       return result;
+                                                       return self.ascend? result: -result;
                                                }
                                                return NSOrderedSame;
                                            }];

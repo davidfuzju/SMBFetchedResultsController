@@ -25,6 +25,8 @@
 
 @property (readonly, nonatomic, assign) NSStringCompareOptions options;
 
+@property (readonly, nonatomic, assign) BOOL ascend;
+
 @property (readonly, nonatomic, assign) BOOL moving;
 
 @property (readonly, nonatomic, assign) BOOL sorted;
@@ -32,7 +34,10 @@
 - (void)sortedResultWithOrderedSet:(NSMutableOrderedSet *)orderedSet;
 
 - (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData;
-- (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData sortKeyPaths:(NSString *)sortKeyPaths sortOptions:(NSStringCompareOptions)options;
+- (instancetype)initWithMutableData:(NSMutableOrderedSet *)mutableData
+                       sortKeyPaths:(NSString *)sortKeyPaths
+                             ascend:(BOOL)ascend
+                        sortOptions:(NSStringCompareOptions)options;
 
 - (void)appendObject:(id <SMBFetchedResultsProtocol>)object;
 - (void)appendObjectsFromArray:(NSArray *)otherArray;
