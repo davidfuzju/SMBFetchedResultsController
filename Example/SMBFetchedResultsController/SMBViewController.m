@@ -79,6 +79,7 @@ static NSString *generateUUID() {
     self.dataSource = [NSMutableOrderedSet orderedSetWithArray:@[person1, person2, person3]];
     SMBFetchedResults *fetchedResults = [[SMBFetchedResults alloc] initWithMutableData:self.dataSource
                                                                           sortKeyPaths:@"age"
+                                                                                ascend:YES
                                                                            sortOptions:NSCaseInsensitiveSearch];
     self.fetchedResultsController = [[SMBFetchedResultsController alloc] initWithFetchedResults:fetchedResults
                                                                                           title:@"SMB"
